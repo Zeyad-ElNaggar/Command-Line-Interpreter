@@ -1,17 +1,28 @@
-public class Parser {
+public class Parser{
     String commandName;
     String[] args;
+    
+    //constructor
+    public Parser(){
+        args=new String[10];
+    }
 
     //This method will divide the input into commandName and args
     //where "input" is the string command entered by the user
-    public Boolean parse(String input){
-
-        args= input.split(" ");  //splitting the entered command into words
-        commandName=args[0];          //equaling the first word with the commandName
-
-        return true;
+    public void parse(String input){
+        input=input.trim();
+        commandName= input.split(" ")[0];
+        for(int i=1;i<input.split(" ").length;i++){
+            if(input.split(" ")[i].length()>0 && input.split(" ")[i].charAt(0)!=' ')
+                args[i-1]=input.split(" ")[i];
+        }
     }
-    public String getCommandName(){return commandName;}
-    public String[] getArgs(){return args;}
 
+
+    public String getCommandName(){
+        return this.commandName;
+    }
+    public String[] getArgs(){
+        return this.args;
+    }
 }
