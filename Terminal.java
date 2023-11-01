@@ -171,6 +171,9 @@ public class Terminal{
                 System.err.println("File not found");
             }
         }
+        else{
+            System.out.println("Please enter a text file name");
+        }
     }
 
     public void exit(){
