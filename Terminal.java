@@ -23,8 +23,6 @@ public class Terminal{
         }
         path+=args[args.length-1];
         
-        System.out.println(path);
-        
         if(path.equals("..")){
             this.myPath=myPath.getParent();
         }
@@ -170,6 +168,10 @@ public class Terminal{
     //word count
     public void wc(String []args){
         File file = new File(args[0]);
+        if(!file.isFile()){
+            args[0]+=".txt";
+            file = new File(args[0]);
+        }
         if(file.isFile()){
             int lineNum = 0, wordNum= 0, charNum = 0;
             try {
@@ -189,6 +191,7 @@ public class Terminal{
                 System.err.println("File not found");
             }
         }
+
         else{
             System.out.println("Please enter a text file name");
         }
