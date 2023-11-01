@@ -104,11 +104,17 @@ public class Terminal{
     //delete file
     public void rm(String fileName){
         this.file=new File(fileName);
-        if(!file.isDirectory())
+        if(file.isDirectory())
             System.out.println("rm: cannot remove "+fileName+" : Is a directory");
-        else
+        else if(file.isFile()) {
             file.delete();
+            System.out.println(fileName+ " is removed successfully");
+        }
+        else
+            System.out.println("there is no " +fileName+ " in the current directory");
     }
+
+
 
 
     public void exit(){}
@@ -118,8 +124,8 @@ public class Terminal{
 
         Scanner scan=new Scanner(System.in);
         while (true) {
-            System.out.print("> ");
             System.out.println(myPath);
+            System.out.print("> ");
             String input=scan.nextLine();
             parser.parse(input);
             String command= parser.getCommandName();
