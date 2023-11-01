@@ -18,10 +18,13 @@ public class Terminal{
     // go to given path or when path = ".." -> it returns returns to previous directory 
     public void cd(String[] args){
         String path="";
-        for(int i=0;i<args.length;i++){                
-            path+=args[i];
+        for(int i=0;i<args.length-1;i++){                
+            path+=args[i]+" ";
         }
-
+        path+=args[args.length-1];
+        
+        System.out.println(path);
+        
         if(path.equals("..")){
             this.myPath=myPath.getParent();
         }
@@ -114,37 +117,52 @@ public class Terminal{
     //cat command 
      public void cat(String []args) {
         File file = new File(args[0]);
-            if(file.isFile()){
-                if (args.length == 1) {
-                    try{
-                        BufferedReader reader = new BufferedReader(new FileReader(args[0]));
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            System.out.println(line);
-                        }
-                    } 
-                    catch (IOException e) {
-                        System.err.println("File not found");
-                    }
-            }
-            if(args.length==2){
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader(args[0]));
-                        FileWriter myWriter = new FileWriter(args[1], true);
-                        String line;
-                        myWriter.write(" ");
-                        while ((line = reader.readLine()) != null) {
-                                myWriter.write(line);
-                                System.out.println("Successfully wrote to the file.");
-                        }
-                        myWriter.close();
-                    } catch (IOException e) {
-                        System.err.println("File not found");
-                    }
 
-                }
+        //Handling if user doesn't input .txt in file name
+        if(!file.isFile()){
+            args[0]+=".txt";
+            file = new File(args[0]);
+        }
+        if(args.length==2 ){
+            File file2= new File(args[1]);
+            if(!file2.isFile()){
+                args[1]+=".txt";
+                file2= new File(args[1]);
             }
+        }
+        
+        if (args.length == 1 && file.isFile()) {
+            try{
+                BufferedReader reader = new BufferedReader(new FileReader(args[0]));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } 
+            catch (IOException e) {
+                System.err.println("File not found");
+            }
+        }
+        else if(args.length==2 && file.isFile()){
+            try {
+                BufferedReader reader=new BufferedReader(new FileReader(args[0]));
+                FileWriter myWriter=new FileWriter(args[1], true); //append mode on
+                String line;
+                myWriter.write(" ");
+                while ((line= reader.readLine()) !=null) {
+                        myWriter.write(line);
+                        System.out.println("Successfully wrote to the file.");
+                }
+                myWriter.close();
+            } 
+            catch (IOException e) {
+                System.err.println("File not found");
+            }
+
+        }
+            
         else{
+            
             System.out.println("wrong input");
         }
     }
