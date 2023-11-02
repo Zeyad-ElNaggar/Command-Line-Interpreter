@@ -122,11 +122,10 @@ public class Terminal{
     }
     //Removes each given directory only if it is empty
     public void rmdir(String [] args) {
-        char ch='*';
         if (args.length == 0 || args.length>1) {
             System.out.println("Wrong input for this command");
         }
-        else if (args[0].equals(String.valueOf(ch))) {  //ch='*' -> delete all  empty folders
+        else if (args[0].equals(String.valueOf('*'))) {  //'*' -> delete all  empty folders
             File originalFile = new File(myPath.toString());
             String[] listFolders = originalFile.list();
             Boolean flag=false; //to check if there is "at least" an empty folder in the directory
