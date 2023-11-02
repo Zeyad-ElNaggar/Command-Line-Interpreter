@@ -8,38 +8,55 @@ import java.util.Scanner;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-public class Terminal{
+public class Terminal {
     Parser parser;
     Path myPath;
 
-    Terminal(){
-        parser=new Parser();
-        myPath=Paths.get(System.getProperty("user.dir"));
-    }
-    
-    // go to given path or when path = ".." -> it returns returns to previous directory 
-    public void cd(String[] args){
-        String path="";
-        for(int i=0;i<args.length-1;i++){                
-            path+=args[i]+" ";
-        }
-        path+=args[args.length-1];
-        
-        if(path.equals("..")){
-            this.myPath=myPath.getParent();
-        }
-        else{
-            myPath= myPath.resolve(path);
-            File file=new File(myPath.toString());
-        }
+    Terminal() {
+        parser = new Parser();
+        myPath = Paths.get(System.getProperty("user.dir"));
     }
 
+    // go to given path or when path = ".." -> it returns returns to previous directory 
+    public void cd(String[] args) {
+        if (args.length == 0) {   //changes the current path to the path of your home directory
+            myPath = Paths.get(System.getProperty("user.dir"));
+        }
+        else {
+            String path = "";
+            for (int i = 0; i < args.length - 1; i++) {
+                path += args[i] + " ";
+            }
+            path += args[args.length - 1];
+
+            if (path.equals("..")) {   ///changes the current directory to the previous directory.
+                this.myPath = myPath.getParent();
+            } else {
+                File file = new File(myPath.toString());
+                Boolean flag = false;       //to check if the folder exist in the directory or not
+                String[] listFolders = file.list();
+                for (String folder : listFolders) {
+                    if (folder.equals(path)) {   //if folder exist set flag to true
+                        flag = true;
+                        myPath = myPath.resolve(path);
+                        File file2 = new File(myPath.toString());
+                        break;
+                    }
+                }
+                if (flag == false)
+                    System.out.println(path + " does not exist in the current directory");
+            }
+        }
+    }
     //lists folder's content in order
     public void ls(String []args){
         File file= new File(myPath.toString());
         String [] listFolders = file.list(); 
 
-        if(args.length==0){
+        if (listFolders.length==0){   //if folder is empty
+            System.out.println("The current directory is empty");
+        }
+        else if(args.length==0){
             for (String folder : listFolders) {
                 System.out.println(folder);
             }
