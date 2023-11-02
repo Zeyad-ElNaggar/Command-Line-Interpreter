@@ -171,33 +171,19 @@ public class Terminal {
                 }
             }
         } else {                                       //removing a specific empty folder in the directory
-            File originalFile = new File(myPath.toString());
-            String[] listFolders = originalFile.list();
-            if(listFolders.length==0){   //checking if the folder is already empty
-                System.out.println("The current directory is empty");
-            }
-            else {                  //if the folder is not empty
-                Boolean flag = false; //to check if a folder exists or not
-                for (String folder : listFolders) {
-                    if (folder.equals(args[0])) {
-                        flag = true;
-                        File foundFile = new File(myPath.resolve(folder).toString());
-                        if (foundFile.isDirectory()) {
-                            String[] listofInnerFolders = foundFile.list();
-                            if (listofInnerFolders.length == 0) {
-                                foundFile.delete();
-                                System.out.println(args[0] + " is deleted successfully");
-                            } else {
-                                System.out.println(args[0] + " is not an empty folder");
-                            }
-                        } else {
-                            System.out.println(args[0] + " is not a folder");
-                        }
-                    }
+            Path newPath = myPath.resolve(Paths.get(args[0].toString()));  //
+            File originalFile = new File(newPath.toString());
+            if (originalFile.isDirectory()) {
+                File[] listFiles = originalFile.listFiles();
+
+                if (originalFile.list().length == 0) {
+                    originalFile.delete();
+                    System.out.println(originalFile.getName() + " is deleted successfully");
+                } else {
+                    System.out.println(originalFile.getName() + " is not an empty folder");
                 }
-                if (flag == false) {
-                    System.out.println(args[0] + " does not exist in the directory");
-                }
+            } else {
+                System.out.println(originalFile.getName() + " is not a folder");
             }
         }
     }
