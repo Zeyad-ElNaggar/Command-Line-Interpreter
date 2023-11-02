@@ -8,7 +8,5 @@ public class Main{
     Terminal terminal=  new Terminal();
     terminal.chooseCommandAction();
 
-
-
   }
 }

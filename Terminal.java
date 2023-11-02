@@ -63,6 +63,8 @@ public class Terminal{
                 Path newPath=myPath.resolve(Paths.get(directoryNamePath));
                 file=new File(newPath.toString());
                 file.mkdir();
+
+                System.out.println(directoryNamePath + " is created successfully");
             }
             else
                 System.out.println("You can't create a folder !");
@@ -77,7 +79,7 @@ public class Terminal{
                     Path newPath= myPath.resolve(fileNamePath);
                     File file=new File(newPath.toString());
                     file.createNewFile();
-
+                    System.out.println( fileNamePath+" is created successfully");
                 }
                 catch(Exception fileNotCreated){
                     System.out.println("Error file couldn't be created..try again\n");
@@ -100,16 +102,73 @@ public class Terminal{
     }
 
     //delete file
-    public void rm(String fileName){
-        File file=new File(fileName);
-        if(file.isDirectory())
-            System.out.println("rm: cannot remove "+fileName+" : Is a directory");
-        else if(file.isFile()) {
-            file.delete();
-            System.out.println(fileName+ " is removed successfully");
+    public void rm(String []args) {
+        if (args.length != 1) {
+            System.out.println("Wrong input for this command");
         }
-        else
-            System.out.println("there is no " +fileName+ " in the current directory");
+        else {
+            String fileName=args[0];
+            File file = new File(fileName);
+            if (file.isDirectory())
+                System.out.println("rm: cannot remove " + fileName + " : Is a directory");
+            else if (file.isFile()) {
+                file.delete();
+                System.out.println(fileName + " is removed successfully");
+            } else
+                System.out.println("there is no " + fileName + " in the current directory");
+        }
+    }
+    //Removes each given directory only if it is empty
+    public void rmdir(String [] args) {
+        char ch='*';
+        if (args.length == 0 || args.length>1) {
+            System.out.println("Wrong input for this command");
+        }
+        else if (args[0].equals(String.valueOf(ch))) {  //ch='*' -> delete all  empty folders
+            File originalFile = new File(myPath.toString());
+            String[] listFolders = originalFile.list();
+            Boolean flag=false; //to check if there is "at least" an empty folder in the directory
+
+            for (String folder : listFolders) {               //searching for every folder in the main path
+                File folderFile = new File(myPath.resolve(folder).toString());
+                if (folderFile.isDirectory()) {            //checking if the directory is folder
+                    String[] listofInnerFolders = folderFile.list();
+                    if (listofInnerFolders.length == 0) {               //checking if the folder is empty
+                        folderFile.delete();
+                        System.out.println(folder + " is deleted successfully");
+                        flag = true;
+                    }
+                }
+            }
+            if (flag==false) {
+                System.out.println("There is not any empty folders in the current directory");
+            }
+
+        } else {                                       //removing a specific empty folder in the directory
+            File originalFile = new File(myPath.toString());
+            String[] listFolders = originalFile.list();
+            Boolean flag = false; //to check if a folder exists or not
+            for (String folder : listFolders) {
+                if (folder.equals(args[0])) {
+                    flag = true;
+                    File foundFile = new File(myPath.resolve(folder).toString());
+                    if (foundFile.isDirectory()) {
+                        String[] listofInnerFolders = foundFile.list();
+                        if (listofInnerFolders.length == 0) {
+                            foundFile.delete();
+                            System.out.println(args[0] + " is deleted successfully");
+                        } else {
+                            System.out.println(args[0] + " is not an empty folder");
+                        }
+                    } else {
+                        System.out.println(args[0] + " is not a folder");
+                    }
+                }
+            }
+            if (flag == false) {
+                System.out.println(args[0] + " does not exist in the directory");
+            }
+        }
     }
 
     //cat command 
@@ -230,7 +289,10 @@ public class Terminal{
                     touch(parser.getArgs());
 
                 else if(command.equals("rm"))
-                    rm(parser.getArgs()[0]);
+                    rm(parser.getArgs());
+
+                else if(command.equals("rmdir"))
+                    rmdir(parser.getArgs());
 
                 else if(command.equals("cat"))
                     cat(parser.getArgs());
