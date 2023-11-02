@@ -74,19 +74,22 @@ public class Terminal {
 
 
     //create folder by giving its name or its name and path
-    public void mkdir(String []args){   
-        File file=new File(myPath.toString());
-        for (String directoryNamePath : args) {
-            if(directoryNamePath!=null && file.isDirectory()){
-                
-                Path newPath=myPath.resolve(Paths.get(directoryNamePath));
-                file=new File(newPath.toString());
-                file.mkdir();
+    public void mkdir(String []args) {
+        if (args.length == 0)
+            System.out.println("Wrong input for this command");
+        else {
+            File file = new File(myPath.toString());
+            for (String directoryNamePath : args) {
+                if (directoryNamePath != null && file.isDirectory()) {
 
-                System.out.println(directoryNamePath + " is created successfully");
+                    Path newPath = myPath.resolve(Paths.get(directoryNamePath));
+                    file = new File(newPath.toString());
+                    file.mkdir();
+
+                    System.out.println(directoryNamePath + " is created successfully");
+                } else
+                    System.out.println("You can't create a folder !");
             }
-            else
-                System.out.println("You can't create a folder !");
         }
     }
 
@@ -145,46 +148,56 @@ public class Terminal {
         else if (args[0].equals(String.valueOf('*'))) {  //'*' -> delete all  empty folders
             File originalFile = new File(myPath.toString());
             String[] listFolders = originalFile.list();
-            Boolean flag=false; //to check if there is "at least" an empty folder in the directory
 
-            for (String folder : listFolders) {               //searching for every folder in the main path
-                File folderFile = new File(myPath.resolve(folder).toString());
-                if (folderFile.isDirectory()) {            //checking if the directory is folder
-                    String[] listofInnerFolders = folderFile.list();
-                    if (listofInnerFolders.length == 0) {               //checking if the folder is empty
-                        folderFile.delete();
-                        System.out.println(folder + " is deleted successfully");
-                        flag = true;
+            if(listFolders.length==0){   //checking if the folder is already empty
+                System.out.println("The current directory is empty");
+            }
+            else {       //if the folder is not empty
+                Boolean flag = false; //to check if there is "at least" an empty folder in the directory
+
+                for (String folder : listFolders) {               //searching for every folder in the main path
+                    File folderFile = new File(myPath.resolve(folder).toString());
+                    if (folderFile.isDirectory()) {            //checking if the directory is folder
+                        String[] listofInnerFolders = folderFile.list();
+                        if (listofInnerFolders.length == 0) {               //checking if the folder is empty
+                            folderFile.delete();
+                            System.out.println(folder + " is deleted successfully");
+                            flag = true;
+                        }
                     }
                 }
+                if (flag == false) {
+                    System.out.println("There is not any empty folders in the current directory");
+                }
             }
-            if (flag==false) {
-                System.out.println("There is not any empty folders in the current directory");
-            }
-
         } else {                                       //removing a specific empty folder in the directory
             File originalFile = new File(myPath.toString());
             String[] listFolders = originalFile.list();
-            Boolean flag = false; //to check if a folder exists or not
-            for (String folder : listFolders) {
-                if (folder.equals(args[0])) {
-                    flag = true;
-                    File foundFile = new File(myPath.resolve(folder).toString());
-                    if (foundFile.isDirectory()) {
-                        String[] listofInnerFolders = foundFile.list();
-                        if (listofInnerFolders.length == 0) {
-                            foundFile.delete();
-                            System.out.println(args[0] + " is deleted successfully");
+            if(listFolders.length==0){   //checking if the folder is already empty
+                System.out.println("The current directory is empty");
+            }
+            else {                  //if the folder is not empty
+                Boolean flag = false; //to check if a folder exists or not
+                for (String folder : listFolders) {
+                    if (folder.equals(args[0])) {
+                        flag = true;
+                        File foundFile = new File(myPath.resolve(folder).toString());
+                        if (foundFile.isDirectory()) {
+                            String[] listofInnerFolders = foundFile.list();
+                            if (listofInnerFolders.length == 0) {
+                                foundFile.delete();
+                                System.out.println(args[0] + " is deleted successfully");
+                            } else {
+                                System.out.println(args[0] + " is not an empty folder");
+                            }
                         } else {
-                            System.out.println(args[0] + " is not an empty folder");
+                            System.out.println(args[0] + " is not a folder");
                         }
-                    } else {
-                        System.out.println(args[0] + " is not a folder");
                     }
                 }
-            }
-            if (flag == false) {
-                System.out.println(args[0] + " does not exist in the directory");
+                if (flag == false) {
+                    System.out.println(args[0] + " does not exist in the directory");
+                }
             }
         }
     }
