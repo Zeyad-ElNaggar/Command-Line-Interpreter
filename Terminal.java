@@ -3,9 +3,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Scanner;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 public class Terminal{
     Parser parser;
     Path myPath;
@@ -255,6 +257,91 @@ public class Terminal{
             System.out.println("Please enter a text file name");
         }
     }
+    //cp cmnd
+    public void cp(String srcFile, String dstFile) {
+        try {
+            Files.copy(Paths.get(srcFile), Paths.get(dstFile), StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Copied successfully.");
+        } catch (IOException e) {
+            System.out.println("Error while copying." + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+//cpr cmnd
+    public void cpr(String srcDirc, String dstDircٍٍ) {
+        if (parser.getArgs()[0]== null) {
+            System.out.println("Src is Null");
+            return;
+        }
+        if (parser.getArgs()[1]== null) {
+            System.out.println("Dst is Null");
+            return;
+        }
+        try {
+            File srcDir = new File(srcDirc);
+            File destDir = new File(dstDircٍٍ);
+
+            if (srcDir == null) {
+                System.out.println("Src is Null");
+                return;
+            }
+
+            if (destDir == null) {
+                System.out.println("Dst is Null");
+                return;
+            }
+
+            if (!srcDir.exists() || !srcDir.isDirectory()) {
+                System.out.println("Source directory does not exist or is not a directory");
+                return;
+            }
+
+            if (!destDir.exists()) {
+                // Create the destination directory mkdir function
+                mkdir(new String[]{dstDircٍٍ});
+            }
+
+            if (!destDir.isDirectory()) {
+                System.out.println("Dest is not a directory");
+                return;
+            }
+
+            File[] sourceFiles = srcDir.listFiles();
+
+            if (sourceFiles != null) {
+                for (File source : sourceFiles) {
+                    if (source != null) {
+                        File newDestination = new File(destDir, source.getName());
+
+                        if (newDestination.exists()) {
+                            System.out.println("Dst exists! " + newDestination);
+                        } else {
+                            if (source.isDirectory()) {
+                                mkdir(new String[]{newDestination.getPath()});
+                                cpr(source.getPath(), newDestination.getPath()); // Recursively copy the subdirectory
+                            } else {
+                                try {
+                                    Files.copy(source.toPath(), newDestination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    System.out.println("Copying failed");
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("Src = null.");
+                    }
+                }
+            }
+
+            System.out.println("Copied successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Copying failed");
+        }
+    }
+
+
 
     public void exit(){
         System. exit(0);
@@ -303,6 +390,17 @@ public class Terminal{
                 else if(command.equals("exit"))
                     exit();
 
+                else if (command.equals("cp")) {
+                    if (parser.getArgs().length > 2 && parser.getArgs()[0].equals("-r")) {
+                        String sourcePath = parser.getArgs()[1];
+                        String destinationPath = parser.getArgs()[2];
+                        cpr(sourcePath, destinationPath);
+                    } else if (parser.getArgs().length == 2) {
+                        cp(parser.getArgs()[0], parser.getArgs()[1]);
+                    } else {
+                        System.out.println("Invalid 'cp' or 'cp -r' command. Usage: cp <sourceFile> <destinationFile> or cp -r <sourceDirectory> <destinationDirectory>");
+                    }
+                }
                 else{
                     System.out.println("Command not found");
                 }
