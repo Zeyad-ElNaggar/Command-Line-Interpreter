@@ -130,7 +130,7 @@ public class Terminal {
         }
         else {
             String fileName=args[0];
-            File file = new File(fileName);
+            File file = new File(myPath.resolve(fileName).toString());
             if (file.isDirectory())
                 System.out.println("rm: cannot remove " + fileName + " : Is a directory");
             else if (file.isFile()) {
