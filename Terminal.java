@@ -32,16 +32,12 @@ public class Terminal {
             if (path.equals("..")) {   ///changes the current directory to the previous directory.
                 this.myPath = myPath.getParent();
             } else {
-                File file = new File(myPath.toString());
-                Boolean flag = false;       //to check if the folder exist in the directory or not
-                String[] listFolders = file.list();
-                for (String folder : listFolders) {
-                    if (folder.equals(path)) {   //if folder exist set flag to true
-                        flag = true;
-                        myPath = myPath.resolve(path);
-                        File file2 = new File(myPath.toString());
-                        break;
-                    }
+                Boolean flag = false;       //to check if the
+                Path newPath = myPath.resolve(Paths.get(path));  //
+                File file = new File(newPath.toString());// folder exist in the directory or not
+                if (file.isDirectory()) {
+                    myPath = myPath.resolve(newPath);
+                    flag=true;
                 }
                 if (flag == false)
                     System.out.println(path + " does not exist in the current directory");
